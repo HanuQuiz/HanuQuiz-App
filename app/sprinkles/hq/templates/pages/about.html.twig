@@ -1,0 +1,26 @@
+{% extends "pages/abstract/default.html.twig" %}
+
+{% set page_active = "about" %}
+
+{# Overrides blocks in head of base template #}
+{% block page_title %}{{translate("ABOUT")}}{% endblock %}
+
+{% block page_description %}About Hanu-Quiz Framework{% endblock %}
+
+{% block body_matter %}
+
+    <!-- Intro Content -->
+    <div class="row">
+        <div class="col-md-6">
+            <img class="img-responsive" src="https://placehold.it/750x450" alt="">
+        </div>
+        <div class="col-md-6">
+            <h2>About Hanu-Quiz Framework</h2>
+            <p>Using Hanu-Quiz framewrok, you can manage Quiz content. This quiz content is used in Android app</p>
+            <p>The end users in Android app - take the quiz</p>
+            <p>New quiz and questions can be added in the backed which will be automatically pushed to the Android device</p>
+        </div>
+    </div>
+    <!-- /.row -->
+
+{% endblock %}

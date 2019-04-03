@@ -1,0 +1,10 @@
+---
+question:
+  validators:
+    required:
+      label: "&QUESTION"
+      message: VALIDATE.REQUIRED
+  transformations:
+app_id:
+level:
+choice_type:

@@ -1,0 +1,50 @@
+<form class="js-form" method="{{form.method | default('POST')}}" action="{{site.uri.public}}/{{form.action}}">
+    {% include "forms/csrf.html.twig" %}
+    <div class="js-form-alerts">
+    </div>
+    <div class="row">
+        {% block app_form %}
+            {% if 'AppName' not in form.fields.hidden %}
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <label>{{translate("APP.NAME")}}</label>
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-edit fa-fw"></i></span>
+                        <input type="text" class="form-control" name="name" autocomplete="off" value="{{app.name}}" placeholder="{{translate("APP.NAME_EXPLAIN")}}" {% if 'name' in form.fields.disabled %}disabled{% endif %}>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            {% if 'slug' not in form.fields.hidden %}
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <label>{{translate("SLUG")}}</label>
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-tag fa-fw"></i></span>
+                        <input type="text" class="form-control" name="slug" autocomplete="off" value="{{app.slug}}" placeholder="{{translate("SLUG")}}" {% if 'slug' in form.fields.disabled %}disabled{% endif %} readonly>
+                        {% if 'slug' not in form.fields.disabled %}
+                            <span class="input-group-btn" data-toggle="buttons">
+                                <label class="btn btn-primary">
+                                    <input type="checkbox" id="form-group-slug-override" autocomplete="off"> {{translate("OVERRIDE")}}
+                                </label>
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        {% endblock %}
+    </div><br>
+    <div class="row">
+        <div class="col-xs-6 col-sm-4">
+            <button type="submit" class="btn btn-block btn-lg btn-success">{{form.submit_text}}</button>
+        </div>
+        <div class="col-xs-4 col-sm-3 pull-right">
+            <button type="button" class="btn btn-block btn-lg btn-link" data-dismiss="modal">{{translate("CANCEL")}}</button>
+        </div>
+    </div>
+</form>
+<!-- Include validation rules -->
+<script>
+{% include "pages/partials/page.js.twig" %}
+</script>

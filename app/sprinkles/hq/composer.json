@@ -1,0 +1,22 @@
+{
+    "name": "hnau-quiz/site",
+    "type": "userfrosting-sprinkle",
+    "description": "Hanu Quiz Framework",
+    "keywords": ["Hanu Quiz Framework", "ABAP Quiz", "Ayansh TechnoSoft"],
+    "homepage": "https://projects.ayansh.com",
+    "license" : "MIT",
+    "authors" : [
+        {
+            "name": "Ayansh TechnoSoft",
+            "homepage": "https://ayansh.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.6"
+    },
+    "autoload": {
+        "psr-4": {
+            "UserFrosting\\Sprinkle\\Hq\\": "src/"
+        }
+    }
+}

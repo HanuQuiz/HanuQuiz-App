@@ -1,0 +1,64 @@
+{
+  "bundle": {
+    "js/hq": {
+      "scripts": [],
+      "options": {
+        "result": {
+          "type": {
+            "scripts": "plain"
+          }
+        }
+      }
+    },
+    "js/pages/apps": {
+      "scripts": [
+        "hq/js/pages/apps.js",
+        "hq/js/widgets/apps.js"
+      ],
+      "options": {
+        "result": {
+          "type": {
+            "scripts": "plain"
+          }
+        }
+      }
+    },
+    "js/pages/app": {
+      "scripts": [
+        "hq/js/pages/apps.js",
+        "hq/js/pages/app.js",
+        "hq/js/widgets/apps.js"
+      ],
+      "options": {
+        "result": {
+          "type": {
+            "scripts": "plain"
+          }
+        }
+      }
+    },
+    "js/pages/questions": {
+      "scripts": [
+        "hq/js/pages/questions.js",
+        "hq/js/widgets/questions.js"
+      ],
+      "options": {
+        "result": {
+          "type": {
+            "scripts": "plain"
+          }
+        }
+      }
+    },
+    "css/hq": {
+      "styles": [],
+      "options": {
+        "result": {
+          "type": {
+            "styles": "plain"
+          }
+        }
+      }
+    }
+  }
+}

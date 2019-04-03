@@ -1,0 +1,11 @@
+{% extends '@admin/navigation/sidebar-menu.html.twig' %}
+
+{% block navigation %}
+    {{ parent() }}
+    <li>
+        <a href="{{site.uri.public}}/apps"><i class="fa fa-tachometer fa-fw"></i> <span>HQ Dashboard</span></a>
+    </li>
+    <li>
+        <a href="{{site.uri.public}}/questions"><i class="fa fa-cutlery fa-fw"></i> <span>Questions List</span></a>
+    </li>
+{% endblock %}
