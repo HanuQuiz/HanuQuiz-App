@@ -55,7 +55,7 @@ return [
         1 => 'Question',
         2 => 'Questions',
 
-       'ID'                => 'ID',
+       'ID'                => 'Question ID',
        'CREATE'            => 'Create Question',
        'EDIT'              => 'Edit Question',
        'DELETE'            => 'Delete Question',
@@ -67,6 +67,27 @@ return [
        'DESC'              => 'Question description',
        'DESC_EXPLAIN'      => 'Please enter the question',
        'PAGE_DESCRIPTION'  => 'List of Questions',
-       'CREATION_SUCCESSFUL' => 'Successfully created new question'
+       'CREATION_SUCCESSFUL' => 'Successfully created new question',
+       'OPTION' => [
+          1         =>  'Option',
+          2         =>  'Options',
+          'ID'      =>  'Option ID',
+          'TEXT'    =>  'Option Text',
+          'CREATE'  =>  'Create Option',
+          'EDIT'    =>  'Edit Option',
+          'DELETE'  =>  'Delete Option',
+          'IS_ANS'  =>  'Is answer',
+          'SUCCESS' =>  'Option created Successfully',
+          'EDIT_OK' =>  'Option updated successfully'
+        ],
+        'META' => [
+          1         =>  'Meta',
+          2         =>  'Meta',
+          'KEY'     =>  'Meta Key',
+          'VALUE'   =>  'Meta Value',
+          'CREATE'  =>  'Add Meta Data',
+          'SUCCESS' =>  'Meta data created Successfully'
+        ]
     ]
+
 ];

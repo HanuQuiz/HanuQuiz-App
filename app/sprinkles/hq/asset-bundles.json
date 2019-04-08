@@ -50,6 +50,20 @@
         }
       }
     },
+    "js/pages/question": {
+      "scripts": [
+        "hq/js/pages/question.js",
+        "hq/js/widgets/options.js",
+        "hq/js/widgets/meta.js"
+      ],
+      "options": {
+        "result": {
+          "type": {
+            "scripts": "plain"
+          }
+        }
+      }
+    },
     "css/hq": {
       "styles": [],
       "options": {

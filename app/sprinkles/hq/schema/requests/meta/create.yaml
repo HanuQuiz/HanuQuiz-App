@@ -1,0 +1,14 @@
+---
+question_id:
+meta_key:
+  validators:
+    required:
+      label: "&QUESTION.META.KEY"
+      message: VALIDATE.REQUIRED
+  transformations:
+meta_value:
+  validators:
+    required:
+      label: "&QUESTION.META.VALUE"
+      message: VALIDATE.REQUIRED
+  transformations:

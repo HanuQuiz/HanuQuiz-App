@@ -20,15 +20,19 @@ $app->group('/questions', function () {
 })->add('authGuard')->add(new NoCache());
 
 $app->group('/api/questions', function () {
-    $this->delete('/q/{slug}', 'UserFrosting\Sprinkle\Hq\Controller\QuestionController:delete');
+    $this->delete('/q/{id}', 'UserFrosting\Sprinkle\Hq\Controller\QuestionController:delete');
 
     $this->get('', 'UserFrosting\Sprinkle\Hq\Controller\QuestionController:getList');
 
-    $this->get('/q/id/{slug}', 'UserFrosting\Sprinkle\Hq\Controller\QuestionController:getInfo');
+    $this->get('/q/{id}', 'UserFrosting\Sprinkle\Hq\Controller\QuestionController:getInfo');
+
+    $this->get('/q/{id}/options', 'UserFrosting\Sprinkle\Hq\Controller\QuestionController:getOptions');
+
+    $this->get('/q/{id}/meta', 'UserFrosting\Sprinkle\Hq\Controller\QuestionController:getMeta');
 
     $this->post('', 'UserFrosting\Sprinkle\Hq\Controller\QuestionController:create');
 
-    $this->put('/q/{slug}', 'UserFrosting\Sprinkle\Hq\Controller\QuestionController:updateInfo');
+    $this->put('/q/{id}', 'UserFrosting\Sprinkle\Hq\Controller\QuestionController:updateInfo');
 })->add('authGuard')->add(new NoCache());
 
 $app->group('/modals/question', function () {

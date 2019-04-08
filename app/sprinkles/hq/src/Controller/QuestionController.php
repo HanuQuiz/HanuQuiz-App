@@ -325,6 +325,96 @@ class QuestionController extends SimpleController
     }
 
     /**
+     * Options List API
+     *
+     * @param  Request            $request
+     * @param  Response           $response
+     * @param  array              $args
+     * @throws NotFoundException  If question is not found
+     * @throws ForbiddenException If user is not authozied to access page
+     */
+    public function getOptions(Request $request, Response $response, $args)
+    {
+        $question = $this->getQuestionFromParams($args);
+
+        // If the question no longer exists, forward to main question listing page
+        if (!$question) {
+            throw new NotFoundException();
+        }
+
+        // GET parameters
+        $params = $request->getQueryParams();
+
+        /** @var \UserFrosting\Sprinkle\Account\Authorize\AuthorizationManager $authorizer */
+        $authorizer = $this->ci->authorizer;
+
+        /** @var \UserFrosting\Sprinkle\Account\Database\Models\Interfaces\UserInterface $currentUser */
+        $currentUser = $this->ci->currentUser;
+
+        // Access-controlled page
+        if (!$authorizer->checkAccess($currentUser, 'add_question')) {
+            throw new ForbiddenException();
+        }
+
+        /** @var \UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
+        $classMapper = $this->ci->classMapper;
+
+        $sprunje = $classMapper->createInstance('question_options_sprunje', $classMapper, $params);
+        $sprunje->extendQuery(function ($query) use ($question) {
+            return $query->where('question_id', $question->id);
+        });
+        
+        // Be careful how you consume this data - it has not been escaped and contains untrusted user-supplied content.
+        // For example, if you plan to insert it into an HTML DOM, you must escape it on the client side (or use client-side templating).
+        return $sprunje->toResponse($response);
+    }
+
+    /**
+     * Meta List API
+     *
+     * @param  Request            $request
+     * @param  Response           $response
+     * @param  array              $args
+     * @throws NotFoundException  If app is not found
+     * @throws ForbiddenException If user is not authozied to access page
+     */
+    public function getMeta(Request $request, Response $response, $args)
+    {
+        $question = $this->getQuestionFromParams($args);
+
+        // If the question no longer exists, forward to main question listing page
+        if (!$question) {
+            throw new NotFoundException();
+        }
+
+        // GET parameters
+        $params = $request->getQueryParams();
+
+        /** @var \UserFrosting\Sprinkle\Account\Authorize\AuthorizationManager $authorizer */
+        $authorizer = $this->ci->authorizer;
+
+        /** @var \UserFrosting\Sprinkle\Account\Database\Models\Interfaces\UserInterface $currentUser */
+        $currentUser = $this->ci->currentUser;
+
+        // Access-controlled page
+        if (!$authorizer->checkAccess($currentUser, 'add_question')) {
+            throw new ForbiddenException();
+        }
+
+        /** @var \UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
+        $classMapper = $this->ci->classMapper;
+
+        $sprunje = $classMapper->createInstance('question_meta_sprunje', $classMapper, $params);
+        $sprunje->extendQuery(function ($query) use ($question) {
+            return $query->where('question_id', $question->id);
+        });
+        
+        // Be careful how you consume this data - it has not been escaped and contains untrusted user-supplied content.
+        // For example, if you plan to insert it into an HTML DOM, you must escape it on the client side (or use client-side templating).
+        return $sprunje->toResponse($response);
+    }
+
+    /**
      * Get App from params
      *
      * @param  array               $params

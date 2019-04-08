@@ -1,0 +1,22 @@
+---
+question_id:
+option_id:
+  validators:
+    required:
+      label: "&QUESTION.OPTION.ID"
+      message: VALIDATE.REQUIRED
+  transformations:
+option:
+  validators:
+    required:
+      label: "&QUESTION.OPTION"
+      message: VALIDATE.REQUIRED
+  transformations:
+correct_answer:
+  validators:
+  length:
+      label: "&NAME"
+      min: 0
+      max: 1
+      message: VALIDATE.LENGTH_RANGE
+  transformations:
