@@ -67,6 +67,12 @@ class HQPermissions extends BaseSeed
                 'conditions'  => 'always()',
                 'description' => 'View the Apps of any user.'
             ]),
+            'uri_own_app' => new Permission([
+                'slug'        => 'uri_own_app',
+                'name'        => 'View Own App',
+                'conditions'  => 'is_app_user(self.id,app_id)',
+                'description' => 'View own apps only'
+            ]),
             'create_quiz' => new Permission([
                 'slug'        => 'create_quiz',
                 'name'        => 'Create Quiz',
@@ -76,7 +82,7 @@ class HQPermissions extends BaseSeed
             'delete_quiz' => new Permission([
                 'slug'        => 'delete_quiz',
                 'name'        => 'Delete Quiz',
-                'conditions'  => 'always()',
+                'conditions'  => 'own_quiz(self.id,quiz_id)',
                 'description' => 'Delete quiz in own app'
             ]),
             'create_question' => new Permission([
@@ -88,7 +94,7 @@ class HQPermissions extends BaseSeed
             'delete_question' => new Permission([
                 'slug'        => 'delete_question',
                 'name'        => 'Delete Question',
-                'conditions'  => 'always()',
+                'conditions'  => 'own_question(self.id,question_id)',
                 'description' => 'Delete questions in own app.'
             ]),
             'uri_quiz' => new Permission([
@@ -102,6 +108,24 @@ class HQPermissions extends BaseSeed
                 'name'        => 'View Question List',
                 'conditions'  => 'always()',
                 'description' => 'View the Question List'
+            ]),
+            'read_app' => new Permission([
+                'slug'        => 'read_app',
+                'name'        => 'Read Own App',
+                'conditions'  => 'is_app_user(self.id,app_id)',
+                'description' => 'Read own apps only'
+            ]),
+            'read_quiz' => new Permission([
+                'slug'        => 'read_quiz',
+                'name'        => 'Read Own Quiz',
+                'conditions'  => 'is_app_user(self.id,app_id)',
+                'description' => 'Read Quiz data of own apps only'
+            ]),
+            'read_question' => new Permission([
+                'slug'        => 'read_question',
+                'name'        => 'View Own App',
+                'conditions'  => 'is_app_user(self.id,app_id)',
+                'description' => 'Read Question data of own only'
             ])
         ];
     }
@@ -133,7 +157,6 @@ class HQPermissions extends BaseSeed
      */
     protected function syncPermissionsRole(array $permissions)
     {
-        //*
         $roleAdmin = Role::where('slug', 'hq-admin')->first();
         if ($roleAdmin) {
             $roleAdmin->permissions()->sync([
@@ -143,11 +166,11 @@ class HQPermissions extends BaseSeed
                 $permissions['delete_app']->id
             ]);
         }
-        //*/
-        //*
         $roleAppModerator = Role::where('slug', 'hq-app-moderator')->first();
         if ($roleAppModerator) {
             $roleAppModerator->permissions()->sync([
+                $permissions['uri_apps']->id,
+                $permissions['uri_own_app']->id,
                 $permissions['create_quiz']->id,
                 $permissions['delete_quiz']->id,
                 $permissions['create_question']->id,
@@ -156,6 +179,13 @@ class HQPermissions extends BaseSeed
                 $permissions['uri_questions']->id
             ]);
         }
-        //*/
+        $roleAppReader = Role::where('slug', 'hq-app-reader')->first();
+        if ($roleAppReader) {
+            $roleAppReader->permissions()->sync([
+                $permissions['read_app']->id,
+                $permissions['read_question']->id,
+                $permissions['read_quiz']->id
+            ]);
+        }   
     }
 }

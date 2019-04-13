@@ -20,7 +20,7 @@ use UserFrosting\Sprinkle\Core\Facades\Seeder;
  * See https://laravel.com/docs/5.4/migrations#tables
  * @author Ayansh TechnoSoft (https://ayansh.com)
  */
-class AppModeratorsTable extends Migration
+class AppUserTable extends Migration
 {
 
     public static $dependencies = [
@@ -33,8 +33,8 @@ class AppModeratorsTable extends Migration
      */
     public function up()
     {
-        if (!$this->schema->hasTable('hq_app_moderators')) {
-            $this->schema->create('hq_app_moderators', function (Blueprint $table) {
+        if (!$this->schema->hasTable('hq_app_user')) {
+            $this->schema->create('hq_app_user', function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('app_id')->unsigned();
                 $table->integer('user_id')->unsigned();
@@ -56,6 +56,6 @@ class AppModeratorsTable extends Migration
      */
     public function down()
     {
-        $this->schema->drop('hq_app_moderators');
+        $this->schema->drop('hq_app_user');
     }
 }

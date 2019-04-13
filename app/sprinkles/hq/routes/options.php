@@ -21,7 +21,7 @@ $app->group('/api/options', function () {
 
 })->add('authGuard')->add(new NoCache());
 
-$app->group('/modals/q/{id}/options', function () {
+$app->group('/modals/q/{slug}/options', function () {
     $this->get('/confirm-delete', 'UserFrosting\Sprinkle\Hq\Controller\QuestionOptionController:getModalConfirmDelete');
 
     $this->get('/create', 'UserFrosting\Sprinkle\Hq\Controller\QuestionOptionController:getModalCreate');

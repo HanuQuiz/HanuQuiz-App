@@ -71,7 +71,7 @@ function bindOptionButtons(el, options) {
         e.preventDefault();
 
         $("body").ufModal({
-            sourceUrl: site.uri.public + "/modals/q/" + page.question_id + "/options/edit",
+            sourceUrl: site.uri.public + "/modals/q/" + page.question_slug + "/options/edit",
             ajaxParams: {
                 id: $(this).data('id')
             },
@@ -86,7 +86,7 @@ function bindOptionButtons(el, options) {
         e.preventDefault();
 
         $("body").ufModal({
-            sourceUrl: site.uri.public + "/modals/q/" + page.question_id + "/options/confirm-delete",
+            sourceUrl: site.uri.public + "/modals/q/" + page.question_slug + "/options/confirm-delete",
             ajaxParams: {
                 id: $(this).data('id')
             },
@@ -113,7 +113,7 @@ function bindOptionCreationButton(el) {
         e.preventDefault();
 
         $("body").ufModal({
-            sourceUrl: site.uri.public + "/modals/q/" + page.question_id + "/options/create",
+            sourceUrl: site.uri.public + "/modals/q/" + page.question_slug + "/options/create",
             msgTarget: $("#alerts-page")
         });
 

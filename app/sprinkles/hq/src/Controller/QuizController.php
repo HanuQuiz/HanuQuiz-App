@@ -22,14 +22,14 @@ use UserFrosting\Support\Exception\ForbiddenException;
 use UserFrosting\Support\Exception\NotFoundException;
 
 /**
- * Controller class for Application-related requests, including listing useAppsrs, CRUD for Apps, etc.
+ * Controller class for Quiz-related requests, including listing questions, CRUD for quiz, etc.
  *
  * @author Ayansh TechnoSoft (https://ayansh.com)
  */
-class AppController extends SimpleController
+class QuizController extends SimpleController
 {
 	/**
-     * Processes the request to create a new Application (from the admin controls).
+     * Processes the request to create a new Question (from the admin controls).
      *
      * Processes the request from the application creation form, checking that:
      * 1. The App Name is not already in use;
@@ -56,7 +56,7 @@ class AppController extends SimpleController
         $currentUser = $this->ci->currentUser;
 
         // Access-controlled page
-        if (!$authorizer->checkAccess($currentUser, 'create_app')) {
+        if (!$authorizer->checkAccess($currentUser, 'create_quiz')) {
             throw new ForbiddenException();
         }
 
@@ -64,7 +64,7 @@ class AppController extends SimpleController
         $ms = $this->ci->alerts;
 
         // Load the request schema
-        $schema = new RequestSchema('schema://requests/app/create.yaml');
+        $schema = new RequestSchema('schema://requests/quiz/create.yaml');
 
         // Whitelist and set parameter defaults
         $transformer = new RequestDataTransformer($schema);
@@ -83,13 +83,18 @@ class AppController extends SimpleController
         $classMapper = $this->ci->classMapper;
 
         // Check if name or slug already exists
-        if ($classMapper->staticMethod('app', 'where', 'slug', $data['slug'])->first()) {
-            $ms->addMessageTranslated('danger', 'APP.NAME_IN_USE', $data);
+        if ($classMapper->staticMethod('quiz', 'where', 'slug', $data['slug'])->first()) {
+            $ms->addMessageTranslated('danger', 'QUIZ.IN_USE', $data);
             $error = true;
         }
 
         if ($error) {
             return $response->withJson([], 400);
+        }
+
+        // Final Authorization check
+        if (!$authorizer->checkAccess($currentUser, 'uri_own_app', ['app_id' => $data['app_id']])) {
+            throw new ForbiddenException();
         }
 
         /** @var \UserFrosting\Support\Repository\Repository $config */
@@ -99,31 +104,31 @@ class AppController extends SimpleController
         // Begin transaction - DB will be rolled back if an exception occurs
         Capsule::transaction(function () use ($classMapper, $data, $ms, $config, $currentUser) {
             // Create the App
-            $app = $classMapper->createInstance('app', $data);
+            $quiz = $classMapper->createInstance('quiz', $data);
 
             // Make it inactive by default
-            $app->status = '';
+            $quiz->status = '';
 
             // Store new App to database
-            $app->save();
+            $quiz->save();
 
             // Create activity record
-            $this->ci->userActivityLogger->info("User {$currentUser->user_name} created app {$app->slug}.", [
-                'type'    => 'app_create',
+            $this->ci->userActivityLogger->info("User {$currentUser->user_name} created quiz {$quiz->slug}.", [
+                'type'    => 'quiz_create',
                 'user_id' => $currentUser->id
             ]);
 
-            $ms->addMessageTranslated('success', 'APP.CREATION_SUCCESSFUL', $data);
+            $ms->addMessageTranslated('success', 'QUIZ.CREATION_SUCCESSFUL', $data);
         });
 
         return $response->withJson([], 200);
     }
 
     /**
-     * Renders the Application List page.
+     * Renders the Questions List page.
      *
-     * This page renders a table of apps, with details and menus for admin actions for each app.
-     * Actions typically include: edit details, activate / deactivate, delete user.
+     * This page renders a table of questions, with details and menus for admin actions for each question.
+     * Actions typically include: edit details, activate / deactivate, delete question.
      *
      * This page requires authentication.
      * Request type: GET
@@ -132,7 +137,7 @@ class AppController extends SimpleController
      * @param  array              $args
      * @throws ForbiddenException If user is not authozied to access page
      */
-    public function appList(Request $request, Response $response, $args)
+    public function quizList(Request $request, Response $response, $args)
     {
         /** @var \UserFrosting\Sprinkle\Account\Authorize\AuthorizationManager $authorizer */
         $authorizer = $this->ci->authorizer;
@@ -141,80 +146,11 @@ class AppController extends SimpleController
         $currentUser = $this->ci->currentUser;
 
         // Access-controlled page
-        if (!$authorizer->checkAccess($currentUser, 'uri_apps')) {
+        if (!$authorizer->checkAccess($currentUser, 'uri_quiz')) {
             throw new ForbiddenException();
         }
 
-        return $this->ci->view->render($response, 'pages/app_list.html.twig');
-    }
-
-    /**
-     * Renders a page displaying a App information, in read-only mode.
-     *
-     * This checks that the currently logged-in user has permission to view the requested app info.
-     * It checks each field individually, showing only those that you have permission to view.
-     * This will also try to show buttons for deleting, and editing the app.
-     * This page requires authentication.
-     *
-     * Request type: GET
-     * @param  Request            $request
-     * @param  Response           $response
-     * @param  array              $args
-     * @throws ForbiddenException If user is not authozied to access page
-     */
-    public function pageInfo(Request $request, Response $response, $args)
-    {
-        $app = $this->_getAppFromParams($args);
-
-        // If the app no longer exists, forward to main app listing page
-        if (!$app) {
-            throw new NotFoundException();
-        }
-
-        /** @var \UserFrosting\Sprinkle\Account\Authorize\AuthorizationManager $authorizer */
-        $authorizer = $this->ci->authorizer;
-
-        /** @var \UserFrosting\Sprinkle\Account\Database\Models\Interfaces\UserInterface $currentUser */
-        $currentUser = $this->ci->currentUser;
-
-        /** @var \UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
-        $classMapper = $this->ci->classMapper;
-        
-        // Access-controlled page
-        if (!$authorizer->checkAccess($currentUser, 'uri_own_app', ['app_id' => $app->id]) && 
-            !$authorizer->checkAccess($currentUser, 'add_moderator')) {
-            throw new ForbiddenException();
-        }
-
-        // Determine fields that currentUser is authorized to view
-        $fieldNames = ['name', 'slug', 'status'];
-
-        // Generate form
-        $fields = [
-            'hidden' => []
-        ];
-
-        // Determine buttons to display
-        $editButtons = [
-            'hidden' => []
-        ];
-
-        if (!$authorizer->checkAccess($currentUser, 'delete_app', [
-            'app' => $app
-        ])) {
-            $editButtons['hidden'][] = 'delete';
-        }
-
-        return $this->ci->view->render($response, 'pages/app.html.twig', [
-            'app'  => $app,
-            'fields' => $fields,
-            'tools'  => $editButtons,
-            'delete_redirect' => $this->ci->router->pathFor('uri_apps'),
-            'counter' => [
-                'questions'  => $classMapper->staticMethod('question', 'count'),
-                'quizzes'  => $classMapper->staticMethod('quiz', 'count')
-            ]
-        ]);
+        return $this->ci->view->render($response, 'pages/quiz_list.html.twig');
     }
 
     /**
@@ -241,29 +177,28 @@ class AppController extends SimpleController
         $currentUser = $this->ci->currentUser;
 
         // Access-controlled page
-        if (!$authorizer->checkAccess($currentUser, 'uri_apps')) {
+        if (!$authorizer->checkAccess($currentUser, 'uri_quiz')) {
             throw new ForbiddenException();
         }
 
         /** @var \UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
         $classMapper = $this->ci->classMapper;
 
-        $sprunje = $classMapper->createInstance('app_sprunje', $classMapper, $params);
-
-        if (!$authorizer->checkAccess($currentUser, 'create_app')) {
-            $sprunje->extendQuery(function ($query) {
-                $query->join('hq_app_user', 'hq_app_user.app_id','=', 'hq_apps.id');
-                return $query->where('hq_app_user.user_id', $this->ci->currentUser->id);
-            });
-        }
+        $sprunje = $classMapper->createInstance('quiz_sprunje', $classMapper, $params);
+        $sprunje->extendQuery(function ($query) {
+            $query->with('app');
+            $query->where('hq_app_user.user_id', $this->ci->currentUser->id);
+            return $query;
+        });
 
         // Be careful how you consume this data - it has not been escaped and contains untrusted user-supplied content.
         // For example, if you plan to insert it into an HTML DOM, you must escape it on the client side (or use client-side templating).
         return $sprunje->toResponse($response);
+
     }
 
     /**
-     * Renders the modal form for creating a new App.
+     * Renders the modal form for creating a new Question.
      *
      * This does NOT render a complete page.  Instead, it renders the HTML for the modal, which can be embedded in other pages.
      * This page requires authentication.
@@ -289,7 +224,7 @@ class AppController extends SimpleController
         $translator = $this->ci->translator;
 
         // Access-controlled page
-        if (!$authorizer->checkAccess($currentUser, 'create_app')) {
+        if (!$authorizer->checkAccess($currentUser, 'create_quiz')) {
             throw new ForbiddenException();
         }
 
@@ -297,22 +232,27 @@ class AppController extends SimpleController
         $classMapper = $this->ci->classMapper;
 
         // Create a dummy group to prepopulate fields
-        $app = $classMapper->createInstance('app', []);
+        $quiz = $classMapper->createInstance('quiz', []);
 
-        $fieldNames = ['slug', 'name'];
+        // App List
+        $apps = $classMapper->createInstance('app',[])->appsOfUser($currentUser->id);
+
+        //$fieldNames = ['app_id', 'question', 'level', 'choice_type', 'status'];
         $fields = [
             'hidden'   => [],
             'disabled' => []
         ];
 
         // Load validation rules
-        $schema = new RequestSchema('schema://requests/app/create.yaml');
+        $schema = new RequestSchema('schema://requests/quiz/create.yaml');
         $validator = new JqueryValidationAdapter($schema, $this->ci->translator);
 
-        return $this->ci->view->render($response, 'modals/app.html.twig', [
-            'app' => $app,
+        return $this->ci->view->render($response, 'modals/quiz.html.twig', [
+            'quiz'      => $quiz,
+            'apps'          => $apps,
+            'levels'        => $this->ci->config['levels'],
             'form'  => [
-                'action'      => 'api/apps',
+                'action'      => 'api/quiz',
                 'method'      => 'POST',
                 'fields'      => $fields,
                 'submit_text' => $translator->translate('CREATE')
@@ -324,20 +264,84 @@ class AppController extends SimpleController
     }
 
     /**
-     * Moderator List API
+     * Renders a page displaying a Question information, in read-only mode.
+     *
+     * This checks that the currently logged-in user has permission to view the requested question info.
+     * It checks each field individually, showing only those that you have permission to view.
+     * This will also try to show buttons for deleting, and editing the question.
+     * This page requires authentication.
+     *
+     * Request type: GET
+     * @param  Request            $request
+     * @param  Response           $response
+     * @param  array              $args
+     * @throws ForbiddenException If user is not authozied to access page
+     */
+    public function pageInfo(Request $request, Response $response, $args)
+    {
+        $quiz = $this->getQuizFromParams($args);
+
+        // If the quiz no longer exists, forward to main quiz listing page
+        if (!$quiz) {
+            throw new NotFoundException();
+        }
+
+        /** @var \UserFrosting\Sprinkle\Account\Authorize\AuthorizationManager $authorizer */
+        $authorizer = $this->ci->authorizer;
+
+        /** @var \UserFrosting\Sprinkle\Account\Database\Models\Interfaces\UserInterface $currentUser */
+        $currentUser = $this->ci->currentUser;
+
+        /** @var \UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
+        $classMapper = $this->ci->classMapper;
+        
+        // Access-controlled page
+        if (!$authorizer->checkAccess($currentUser, 'uri_own_app', ['app_id' => $quiz->app_id])) {
+            throw new ForbiddenException();
+        }
+
+        // Determine fields that currentUser is authorized to view
+        //$fieldNames = ['app_id', 'question', 'level', 'choice_type', 'status'];
+
+        // Generate form
+        $fields = [
+            'hidden' => ['question_id','app_id','choice_type']
+        ];
+
+        // Determine buttons to display
+        $editButtons = [
+            'hidden' => []
+        ];
+
+        if (!$authorizer->checkAccess($currentUser, 'delete_quiz', [
+            'quiz' => $quiz
+        ])) {
+            $editButtons['hidden'][] = 'delete';
+        }
+
+        return $this->ci->view->render($response, 'pages/quiz.html.twig', [
+            'quiz'  => $quiz,
+            'fields'    => $fields,
+            'tools'     => $editButtons,
+            'delete_redirect' => $this->ci->router->pathFor('uri_quiz')
+        ]);
+    }
+
+    /**
+     * Questions List API
      *
      * @param  Request            $request
      * @param  Response           $response
      * @param  array              $args
-     * @throws NotFoundException  If app is not found
+     * @throws NotFoundException  If quiz is not found
      * @throws ForbiddenException If user is not authozied to access page
      */
-    public function getModerators(Request $request, Response $response, $args)
+    public function getQuestions(Request $request, Response $response, $args)
     {
-        $app = $this->_getAppFromParams($args);
+        $quiz = $this->getQuizFromParams($args);
 
-        // If the group no longer exists, forward to main group listing page
-        if (!$app) {
+        // If the question no longer exists, forward to main question listing page
+        if (!$quiz) {
             throw new NotFoundException();
         }
 
@@ -351,40 +355,86 @@ class AppController extends SimpleController
         $currentUser = $this->ci->currentUser;
 
         // Access-controlled page
-        /*
-        if (!$authorizer->checkAccess($currentUser, 'add_moderator')) {
+        if (!$authorizer->checkAccess($currentUser, 'create_quiz')) {
             throw new ForbiddenException();
         }
-        */
-        if (!$authorizer->checkAccess($currentUser, 'uri_own_app', ['app_id' => $app->id]) && 
-            !$authorizer->checkAccess($currentUser, 'add_moderator')) {
+        if (!$authorizer->checkAccess($currentUser, 'uri_own_app', ['app_id' => $quiz->app_id])) {
             throw new ForbiddenException();
         }
 
         /** @var \UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
         $classMapper = $this->ci->classMapper;
 
-        $sprunje = $classMapper->createInstance('user_sprunje', $classMapper, $params);
-        $sprunje->extendQuery(function ($query) use ($app) {
-            return $query->join('hq_app_user', function ($join) use ($app) { $join->on('hq_app_user.user_id', 'users.id')->where('app_id', $app->id); });
-        });
+        $sprunje = $classMapper->createInstance('question_sprunje', $classMapper, $params);
 
+        $sprunje->extendQuery(function ($query) use ($quiz) {
+            return $query->join('hq_quiz_questions', function ($join) use ($quiz) { $join->on('hq_quiz_questions.question_id', 'hq_question.id')->where('quiz_id', $quiz->id); });
+        });
+        
         // Be careful how you consume this data - it has not been escaped and contains untrusted user-supplied content.
         // For example, if you plan to insert it into an HTML DOM, you must escape it on the client side (or use client-side templating).
         return $sprunje->toResponse($response);
     }
 
     /**
-     * Get App from params
+     * Meta List API
+     *
+     * @param  Request            $request
+     * @param  Response           $response
+     * @param  array              $args
+     * @throws NotFoundException  If quiz is not found
+     * @throws ForbiddenException If user is not authozied to access page
+     */
+    public function getMeta(Request $request, Response $response, $args)
+    {
+        $quiz = $this->getQuizFromParams($args);
+
+        // If the question no longer exists, forward to main question listing page
+        if (!$quiz) {
+            throw new NotFoundException();
+        }
+
+        // GET parameters
+        $params = $request->getQueryParams();
+
+        /** @var \UserFrosting\Sprinkle\Account\Authorize\AuthorizationManager $authorizer */
+        $authorizer = $this->ci->authorizer;
+
+        /** @var \UserFrosting\Sprinkle\Account\Database\Models\Interfaces\UserInterface $currentUser */
+        $currentUser = $this->ci->currentUser;
+
+        // Access-controlled page
+        if (!$authorizer->checkAccess($currentUser, 'create_quiz')) {
+            throw new ForbiddenException();
+        }
+        if (!$authorizer->checkAccess($currentUser, 'uri_own_app', ['app_id' => $quiz->app_id])) {
+            throw new ForbiddenException();
+        }
+
+        /** @var \UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
+        $classMapper = $this->ci->classMapper;
+
+        $sprunje = $classMapper->createInstance('quiz_meta_sprunje', $classMapper, $params);
+        $sprunje->extendQuery(function ($query) use ($quiz) {
+            return $query->where('quiz_id', $quiz->id);
+        });
+        
+        // Be careful how you consume this data - it has not been escaped and contains untrusted user-supplied content.
+        // For example, if you plan to insert it into an HTML DOM, you must escape it on the client side (or use client-side templating).
+        return $sprunje->toResponse($response);
+    }
+
+    /**
+     * Get getQuizFromParams from params
      *
      * @param  array               $params
      * @throws BadRequestException
-     * @return App
+     * @return getQuizFromParams
      */
-    protected function _getAppFromParams($params)
+    protected function getQuizFromParams($params)
     {
         // Load the request schema
-        $schema = new RequestSchema('schema://requests/app/get-by-slug.yaml');
+        $schema = new RequestSchema('schema://requests/quiz/get-by-slug.yaml');
 
         // Whitelist and set parameter defaults
         $transformer = new RequestDataTransformer($schema);
@@ -407,10 +457,10 @@ class AppController extends SimpleController
         $classMapper = $this->ci->classMapper;
 
         // Get the app object
-        $app = $classMapper->staticMethod('app', 'where', 'slug', $data['slug'])
+        $quiz = $classMapper->staticMethod('quiz', 'where', 'slug', $data['slug'])
             ->first();
 
-        return $app;
+        return $quiz;
     }
 
 }

@@ -92,6 +92,11 @@ class QuestionController extends SimpleController
             return $response->withJson([], 400);
         }
 
+        // Final Authorization check
+        if (!$authorizer->checkAccess($currentUser, 'uri_own_app', ['app_id' => $data['app_id']])) {
+            throw new ForbiddenException();
+        }
+
         /** @var \UserFrosting\Support\Repository\Repository $config */
         $config = $this->ci->config;
 
@@ -181,7 +186,9 @@ class QuestionController extends SimpleController
 
         $sprunje = $classMapper->createInstance('question_sprunje', $classMapper, $params);
         $sprunje->extendQuery(function ($query) {
-            return $query->with('app');
+            $query->with('app');
+            $query->where('hq_app_user.user_id', $this->ci->currentUser->id);
+            return $query;
         });
 
         // Be careful how you consume this data - it has not been escaped and contains untrusted user-supplied content.
@@ -228,8 +235,8 @@ class QuestionController extends SimpleController
         $question = $classMapper->createInstance('question', []);
 
         // App List
-        $apps = $classMapper->createInstance('app',[])->appsOfModerator($currentUser->id);
-        //$apps = $classMapper->createInstance('app',[])->appsOfModerator(1);
+        $apps = $classMapper->createInstance('app',[])->appsOfUser($currentUser->id);
+        //$apps = $classMapper->createInstance('app',[])->appsOfUser(1);
 
         //$fieldNames = ['app_id', 'question', 'level', 'choice_type', 'status'];
         $fields = [
@@ -291,9 +298,7 @@ class QuestionController extends SimpleController
         $classMapper = $this->ci->classMapper;
         
         // Access-controlled page
-        if (!$authorizer->checkAccess($currentUser, 'uri_question', [
-                'question' => $question
-            ])) {
+        if (!$authorizer->checkAccess($currentUser, 'uri_own_app', ['app_id' => $question->app_id])) {
             throw new ForbiddenException();
         }
 
@@ -352,7 +357,11 @@ class QuestionController extends SimpleController
         $currentUser = $this->ci->currentUser;
 
         // Access-controlled page
-        if (!$authorizer->checkAccess($currentUser, 'add_question')) {
+        if (!$authorizer->checkAccess($currentUser, 'uri_own_app', ['app_id' => $question->app_id])) {
+            throw new ForbiddenException();
+        }
+
+        if (!$authorizer->checkAccess($currentUser, 'uri_questions')) {
             throw new ForbiddenException();
         }
 
@@ -397,7 +406,11 @@ class QuestionController extends SimpleController
         $currentUser = $this->ci->currentUser;
 
         // Access-controlled page
-        if (!$authorizer->checkAccess($currentUser, 'add_question')) {
+        if (!$authorizer->checkAccess($currentUser, 'uri_own_app', ['app_id' => $question->app_id])) {
+            throw new ForbiddenException();
+        }
+        
+        if (!$authorizer->checkAccess($currentUser, 'uri_questions')) {
             throw new ForbiddenException();
         }
 
@@ -424,7 +437,7 @@ class QuestionController extends SimpleController
     protected function getQuestionFromParams($params)
     {
         // Load the request schema
-        $schema = new RequestSchema('schema://requests/question/get-by-id.yaml');
+        $schema = new RequestSchema('schema://requests/question/get-by-slug.yaml');
 
         // Whitelist and set parameter defaults
         $transformer = new RequestDataTransformer($schema);
@@ -447,7 +460,7 @@ class QuestionController extends SimpleController
         $classMapper = $this->ci->classMapper;
 
         // Get the app object
-        $question = $classMapper->staticMethod('question', 'where', 'id', $data['id'])
+        $question = $classMapper->staticMethod('question', 'where', 'slug', $data['slug'])
             ->first();
 
         return $question;

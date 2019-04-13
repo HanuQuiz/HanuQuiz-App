@@ -39,6 +39,7 @@ class AppSprunje extends Sprunje
      */
     protected function baseQuery()
     {
-        return $this->classMapper->createInstance('app')->newQuery();
+        $query = $this->classMapper->createInstance('app')->newQuery();
+        return $query;
     }
 }

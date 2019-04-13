@@ -48,7 +48,16 @@ return [
        'DESC_EXPLAIN'      => 'Please enter the quiz name',
        'INFO_PAGE'         => 'Quiz details page',
        'PAGE_DESCRIPTION'  => 'List of Quiz',
-       'CREATION_SUCCESSFUL' => 'Successfully created new quiz'
+       'CREATION_SUCCESSFUL'  => 'Successfully created new quiz',
+       'ASSIGN_QUESTION'   => 'Assign Question',
+       'META' => [
+          1         =>  'Meta',
+          2         =>  'Meta',
+          'KEY'     =>  'Meta Key',
+          'VALUE'   =>  'Meta Value',
+          'CREATE'  =>  'Add Meta Data',
+          'SUCCESS' =>  'Meta data created Successfully'
+        ]
     ],
 
     'QUESTION' => [

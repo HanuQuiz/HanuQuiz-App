@@ -14,16 +14,18 @@ use UserFrosting\Sprinkle\Core\Database\Migration;
 use UserFrosting\Sprinkle\Core\Facades\Seeder;
 
 /**
- * HQ Apps table migration
+ * HQ Quiz-Questions table migration
  * Version 1
  *
  * See https://laravel.com/docs/5.4/migrations#tables
  * @author Ayansh TechnoSoft (https://ayansh.com)
  */
-class QuestionTable extends Migration
+class QuizQuestionsTable extends Migration
 {
+
     public static $dependencies = [
-        '\UserFrosting\Sprinkle\Hq\Database\Migrations\v1\AppsTable'
+        '\UserFrosting\Sprinkle\Hq\Database\Migrations\v1\QuestionTable',
+        '\UserFrosting\Sprinkle\Hq\Database\Migrations\v1\QuizTable'
     ];
 
     /**
@@ -31,26 +33,20 @@ class QuestionTable extends Migration
      */
     public function up()
     {
-        if (!$this->schema->hasTable('hq_question')) {
-            $this->schema->create('hq_question', function (Blueprint $table) {
+        if (!$this->schema->hasTable('hq_quiz_questions')) {
+            $this->schema->create('hq_quiz_questions', function (Blueprint $table) {
                 $table->increments('id');
-                $table->string('slug');
-                $table->integer('app_id')->unsigned();
-                $table->text('question')->nullable();
-                $table->tinyInteger('level');
-                $table->tinyInteger('choice_type');
-                $table->string('status');
+                $table->integer('quiz_id')->unsigned();
+                $table->integer('question_id')->unsigned();
                 $table->timestamps();
 
                 $table->engine = 'InnoDB';
                 $table->collation = 'utf8_unicode_ci';
                 $table->charset = 'utf8';
-                
-                $table->index('app_id');
-                $table->unique('slug');
-                $table->index('slug');
 
-                $table->foreign('app_id')->references('id')->on('hq_apps');
+                $table->foreign('quiz_id')->references('id')->on('hq_quiz');
+                $table->foreign('question_id')->references('id')->on('hq_question');
+
             });
         }
     }
@@ -60,6 +56,6 @@ class QuestionTable extends Migration
      */
     public function down()
     {
-        $this->schema->drop('hq_question');
+        $this->schema->drop('hq_quiz_questions');
     }
 }

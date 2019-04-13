@@ -23,17 +23,16 @@ use UserFrosting\Sprinkle\Core\Database\Models\Model;
  * @property string IsActive
  * @property string AppID
  */
-class App extends Model
+class AppUser extends Model
 {
     /**
      * @var string The name of the table for the current model.
      */
-    protected $table = 'hq_apps';
+    protected $table = 'hq_app_user';
 
     protected $fillable = [
-        'slug',
-        'name',
-        'status'
+        'app_id',
+        'user_id'
     ];
 
     /**
@@ -52,31 +51,6 @@ class App extends Model
         $result = parent::delete();
 
         return $result;
-    }
-
-    /**
-     * Lazily load a collection of moderators which belong to this App.
-     */
-    public function users()
-    {
-        /** @var \UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
-        $classMapper = static::$ci->classMapper;
-
-        return $this->belongsToMany($classMapper->getClassMapping('user'), 'hq_app_user', 'app_id', 'user_id');
-
-    }
-
-    /**
-    *   Get current users apps
-    */
-    public function appsOfUser($user_id){
-
-        $apps = $this->whereHas('users', function ($query) use ($user_id){
-            $query->where('user_id', $user_id);
-        })->get();
-
-        return $apps;
-
     }
 
 }

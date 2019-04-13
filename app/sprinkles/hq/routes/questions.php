@@ -16,23 +16,23 @@ $app->group('/questions', function () {
     $this->get('', 'UserFrosting\Sprinkle\Hq\Controller\QuestionController:questionList')
         ->setName('uri_questions');
 
-    $this->get('/q/{id}', 'UserFrosting\Sprinkle\Hq\Controller\QuestionController:pageInfo');
+    $this->get('/q/{slug}', 'UserFrosting\Sprinkle\Hq\Controller\QuestionController:pageInfo');
 })->add('authGuard')->add(new NoCache());
 
 $app->group('/api/questions', function () {
-    $this->delete('/q/{id}', 'UserFrosting\Sprinkle\Hq\Controller\QuestionController:delete');
+    $this->delete('/q/{slug}', 'UserFrosting\Sprinkle\Hq\Controller\QuestionController:delete');
 
     $this->get('', 'UserFrosting\Sprinkle\Hq\Controller\QuestionController:getList');
 
-    $this->get('/q/{id}', 'UserFrosting\Sprinkle\Hq\Controller\QuestionController:getInfo');
+    $this->get('/q/{slug}', 'UserFrosting\Sprinkle\Hq\Controller\QuestionController:getInfo');
 
-    $this->get('/q/{id}/options', 'UserFrosting\Sprinkle\Hq\Controller\QuestionController:getOptions');
+    $this->get('/q/{slug}/options', 'UserFrosting\Sprinkle\Hq\Controller\QuestionController:getOptions');
 
-    $this->get('/q/{id}/meta', 'UserFrosting\Sprinkle\Hq\Controller\QuestionController:getMeta');
+    $this->get('/q/{slug}/meta', 'UserFrosting\Sprinkle\Hq\Controller\QuestionController:getMeta');
 
     $this->post('', 'UserFrosting\Sprinkle\Hq\Controller\QuestionController:create');
 
-    $this->put('/q/{id}', 'UserFrosting\Sprinkle\Hq\Controller\QuestionController:updateInfo');
+    $this->put('/q/{slug}', 'UserFrosting\Sprinkle\Hq\Controller\QuestionController:updateInfo');
 })->add('authGuard')->add(new NoCache());
 
 $app->group('/modals/question', function () {

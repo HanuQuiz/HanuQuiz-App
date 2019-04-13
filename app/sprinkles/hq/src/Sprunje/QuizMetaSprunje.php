@@ -12,32 +12,24 @@ namespace UserFrosting\Sprinkle\Hq\Sprunje;
 use UserFrosting\Sprinkle\Core\Sprunje\Sprunje;
 
 /**
- * AppSprunje
+ * QuestionMetaSprunje
  *
- * Implements Sprunje for the Apps API.
+ * Implements Sprunje for the Quiz Meta API.
  *
  * @author Ayansh TechnoSoft (https://ayansh.com)
  */
-class QuizSprunje extends Sprunje
+class QuizMetaSprunje extends Sprunje
 {
-    protected $name = 'quiz';
+    protected $name = 'quiz_meta';
 
     protected $sortable = [
-        'id',
-        'name',
-        'slug',
-        'app_id',
-        'level',
-        'status'
+        'meta_key',
+        'meta_value'
     ];
 
     protected $filterable = [
-        'id',
-        'name',
-        'slug',
-        'app_id',
-        'level',
-        'status'
+        'meta_key',
+        'meta_value'
     ];
 
     /**
@@ -45,8 +37,6 @@ class QuizSprunje extends Sprunje
      */
     protected function baseQuery()
     {
-        $query = $this->classMapper->createInstance('quiz')->newQuery();
-        $query->join('hq_app_user', 'hq_app_user.app_id','=', 'hq_quiz.app_id');
-        return $query;
+        return $this->classMapper->createInstance('quiz_meta');
     }
 }

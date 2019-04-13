@@ -6,30 +6,30 @@
 {% endblock %}
 
 {# Overrides blocks in head of base template #}
-{% block page_title %}{{ translate("APP", 2)}}{% endblock %}
+{% block page_title %}{{ translate("QUIZ", 2)}}{% endblock %}
 
-{% block page_description %}{{ translate("APP.PAGE_DESCRIPTION")}}{% endblock %}
+{% block page_description %}{{ translate("QUIZ.PAGE_DESCRIPTION")}}{% endblock %}
 
 {% block body_matter %}
     <div class="row">
         <div class="col-md-12">
-            <div id="widget-apps" class="box box-primary">
+            <div id="widget-quiz" class="box box-primary">
                 <div class="box-header">
-                    <h3 class="box-title pull-left"><i class="fa fa-fw fa-microchip"></i> {{translate('APP', 2)}}</h3>
+                    <h3 class="box-title pull-left"><i class="fa fa-fw fa-file-text"></i> {{translate('QUIZ', 2)}}</h3>
                     {% include "tables/table-tool-menu.html.twig" %}
                 </div>
                 <div class="box-body">
-                    {% include "tables/app_list.html.twig" with {
+                    {% include "tables/quiz_list.html.twig" with {
                             "table" : {
-                                "id" : "table-apps"
+                                "id" : "table-quiz"
                             }
                         }
                     %}
                 </div>
-                {% if checkAccess('create_app') %}
+                {% if checkAccess('create_quiz') %}
                 <div class="box-footer">
-                    <button type="button" class="btn btn-success js-app-create">
-                        <i class="fa fa-plus-square"></i>  {{ translate("APP.CREATE")}}
+                    <button type="button" class="btn btn-success js-quiz-create">
+                        <i class="fa fa-plus-square"></i>  {{ translate("QUIZ.CREATE")}}
                     </button>
                 </div>
                 {% endif %}
@@ -47,6 +47,6 @@
     {{ assets.js('js/form-widgets') | raw }}
 
     <!-- Include page-specific JS -->
-    {{ assets.js('js/pages/apps') | raw }}
+    {{ assets.js('js/pages/quizlist') | raw }}
 
 {% endblock %}

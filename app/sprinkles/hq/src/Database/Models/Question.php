@@ -31,6 +31,7 @@ class Question extends Model
     protected $table = 'hq_question';
 
     protected $fillable = [
+        'slug',
         'app_id',
         'question',
         'level',

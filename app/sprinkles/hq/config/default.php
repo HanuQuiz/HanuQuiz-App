@@ -19,6 +19,9 @@
             // URLs
             'uri' => [
                 'author' => 'https://ayansh.com'
+            ],
+            'registration' => [
+                'require_email_verification' => true
             ]
         ],
         'php' => [
@@ -32,5 +35,15 @@
         'choice_types' => [
             ["id" => 1, "choice_type" => 'Single'],
             ["id" => 2, "choice_type" => 'Multiple']
+        ],
+        'settings' => [
+            'displayErrorDetails' => true
+        ],
+        'csrf' => [
+            'blacklist' => [
+                '^/sync/api/Artifacts' => [
+                    'POST'
+                ]
+            ]
         ]
     ];

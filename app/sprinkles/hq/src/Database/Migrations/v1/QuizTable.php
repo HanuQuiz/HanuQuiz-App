@@ -36,11 +36,10 @@ class QuizTable extends Migration
 
                 $table->increments('id');
                 $table->integer('app_id')->unsigned();
+                $table->string('name');
                 $table->string('slug');
                 $table->text('description')->nullable();
-                $table->tinyInteger('count');
                 $table->tinyInteger('level');
-                $table->string('question_ids');
                 $table->string('status');
                 $table->timestamps();
 

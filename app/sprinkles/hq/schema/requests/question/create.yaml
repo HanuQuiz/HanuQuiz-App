@@ -8,3 +8,14 @@ question:
 app_id:
 level:
 choice_type:
+slug:
+  validators:
+    required:
+      label: "&SLUG"
+      message: VALIDATE.REQUIRED
+    length:
+      label: "&SLUG"
+      min: 3
+      max: 25
+      message: VALIDATE.LENGTH_RANGE
+  transformations:

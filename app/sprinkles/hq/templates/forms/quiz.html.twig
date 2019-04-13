@@ -3,7 +3,7 @@
     <div class="js-form-alerts">
     </div>
     <div class="row">
-        {% block app_form %}
+        {% block quiz_form %}
             <div class="col-sm-12">
                 <div class="form-group">
                     <label for="input-group">{{translate('APP')}}</label>
@@ -19,43 +19,49 @@
             </div>
             <div class="col-sm-12">
                 <div class="form-group">
+                    <label>{{translate("QUIZ")}}</label>
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-edit fa-fw"></i></span>
+                        <input type="text" class="form-control" name="name" autocomplete="off" value="{{quiz.name}}" placeholder="{{translate("APP.NAME_EXPLAIN")}}" {% if 'name' in form.fields.disabled %}disabled{% endif %}>
+                    </div>
+                </div>
+            </div>
+            {% if 'slug' not in form.fields.hidden %}
+            <div class="col-sm-12">
+                <div class="form-group">
                     <label>{{translate("SLUG")}}</label>
                     <div class="input-group">
-                        <span class="input-group-addon"><i class="fa fa-edit fa-fw"></i></span>
-                        <input type="text" class="form-control" name="slug" autocomplete="off" value="{{question.slug}}" placeholder="{{translate("SLUG")}}" {% if 'slug' in form.fields.disabled %}disabled{% endif %}>
+                        <span class="input-group-addon"><i class="fa fa-tag fa-fw"></i></span>
+                        <input type="text" class="form-control" name="slug" autocomplete="off" value="{{quiz.slug}}" placeholder="{{translate("SLUG")}}" {% if 'slug' in form.fields.disabled %}disabled{% endif %} readonly>
+                        {% if 'slug' not in form.fields.disabled %}
+                            <span class="input-group-btn" data-toggle="buttons">
+                                <label class="btn btn-primary">
+                                    <input type="checkbox" id="form-group-slug-override" autocomplete="off"> {{translate("OVERRIDE")}}
+                                </label>
+                            </span>
+                        {% endif %}
                     </div>
                 </div>
             </div>
+            {% endif %}
+
             <div class="col-sm-12">
                 <div class="form-group">
-                    <label>{{translate("QUESTION")}}</label>
+                    <label>{{translate("QUIZ")}}</label>
                     <div class="input-group">
                         <span class="input-group-addon"><i class="fa fa-edit fa-fw"></i></span>
-                        <input type="text" class="form-control" name="question" autocomplete="off" value="{{question.question}}" placeholder="{{translate("QUESTION.DESC_EXPLAIN")}}" {% if 'question' in form.fields.disabled %}disabled{% endif %}>
+                        <input type="text" class="form-control" name="description" autocomplete="off" value="{{quiz.description}}" placeholder="{{translate("QUIZ.DESC_EXPLAIN")}}" {% if 'question' in form.fields.disabled %}disabled{% endif %}>
                     </div>
                 </div>
             </div>
             <div class="col-sm-12">
                 <div class="form-group">
-                    <label>{{translate("QUESTION.LEVEL")}}</label>
+                    <label>{{translate("QUIZ.LEVEL")}}</label>
                     <div class="input-group">
                         <span class="input-group-addon"><i class="fa fa-edit fa-fw"></i></span>
                         <select id="input-group" class="form-control js-select2" name="level">
                             {% for level in levels %}
                             <option value="{{level.id}}">{{level.level}}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-12">
-                <div class="form-group">
-                    <label>{{translate("QUESTION.CHOICE_TYPE")}}</label>
-                    <div class="input-group">
-                        <span class="input-group-addon"><i class="fa fa-edit fa-fw"></i></span>
-                        <select id="input-group" class="form-control js-select2" name="choice_type">
-                            {% for choice_type in choice_types %}
-                            <option value="{{choice_type.id}}">{{choice_type.choice_type}}</option>
                             {% endfor %}
                         </select>
                     </div>

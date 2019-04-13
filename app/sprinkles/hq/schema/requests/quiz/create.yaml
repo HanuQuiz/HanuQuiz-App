@@ -1,0 +1,38 @@
+---
+name:
+  validators:
+    required:
+      label: "&QUIZ"
+      message: VALIDATE.REQUIRED
+    length:
+      label: "&NAME"
+      min: 4
+      max: 50
+      message: VALIDATE.LENGTH_RANGE
+  transformations:
+description:
+  validators:
+    required:
+      label: "&QUIZ.DESC"
+      message: VALIDATE.REQUIRED
+    length:
+      label: "&NAME"
+      min: 5
+      max: 255
+      message: VALIDATE.LENGTH_RANGE
+  transformations:
+app_id:
+level:
+slug:
+  validators:
+    required:
+      label: "&SLUG"
+      message: VALIDATE.REQUIRED
+    length:
+      label: "&SLUG"
+      min: 3
+      max: 25
+      message: VALIDATE.LENGTH_RANGE
+  transformations:
+  - trim
+description:

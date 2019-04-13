@@ -23,7 +23,7 @@ class QuestionSprunje extends Sprunje
     protected $name = 'questions';
 
     protected $sortable = [
-        'id',
+        'slug',
         'app_id',
         'level',
         'choice_type',
@@ -31,7 +31,7 @@ class QuestionSprunje extends Sprunje
     ];
 
     protected $filterable = [
-        'id',
+        'slug',
         'app_id',
         'level',
         'choice_type',
@@ -43,6 +43,8 @@ class QuestionSprunje extends Sprunje
      */
     protected function baseQuery()
     {
-        return $this->classMapper->createInstance('question');
+        $query = $this->classMapper->createInstance('question')->newQuery();
+        $query->join('hq_app_user', 'hq_app_user.app_id','=', 'hq_question.app_id');
+        return $query;
     }
 }

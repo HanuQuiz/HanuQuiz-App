@@ -5,7 +5,7 @@
 /**
  * Set up the form in a modal after being successfully attached to the body.
  */
-function attachQuestionMetaForm() {
+function attachQuizForm() {
     $("body").on('renderSuccess.ufModal', function (data) {
         var modal = $(this).ufModal('getModal');
         var form = modal.find('.js-form');
@@ -56,7 +56,7 @@ function attachQuestionMetaForm() {
  * @param {module:jQuery} el jQuery wrapped element to target.
  * @param {{delete_redirect: string}} options Options used to modify behaviour of button actions.
  */
-function bindMetaButtons(el, options) {
+function bindQuizButtons(el, options) {
     if (!options) options = {};
 
     /**
@@ -67,11 +67,11 @@ function bindMetaButtons(el, options) {
      * Buttons that launch a modal dialog
      */
     // Edit group details button
-    el.find('.js-app-edit').click(function(e) {
+    el.find('.js-quiz-edit').click(function(e) {
         e.preventDefault();
 
         $("body").ufModal({
-            sourceUrl: site.uri.public + "/modals/question/edit",
+            sourceUrl: site.uri.public + "/modals/quiz/edit",
             ajaxParams: {
                 slug: $(this).data('slug')
             },
@@ -82,11 +82,11 @@ function bindMetaButtons(el, options) {
     });
 
     // Delete group button
-    el.find('.js-app-delete').click(function(e) {
+    el.find('.js-quiz-delete').click(function(e) {
         e.preventDefault();
 
         $("body").ufModal({
-            sourceUrl: site.uri.public + "/modals/question/confirm-delete",
+            sourceUrl: site.uri.public + "/modals/quiz/confirm-delete",
             ajaxParams: {
                 slug: $(this).data('slug')
             },
@@ -107,16 +107,16 @@ function bindMetaButtons(el, options) {
     });
 }
 
-function bindMetaDataCreationButton(el) {
+function bindQuizCreationButton(el) {
     // Link create button
-    el.find('.js-meta-create').click(function(e) {
+    el.find('.js-quiz-create').click(function(e) {
         e.preventDefault();
 
         $("body").ufModal({
-            sourceUrl: site.uri.public + "/modals/q/" + page.question_slug + "/meta/create",
+            sourceUrl: site.uri.public + "/modals/quiz/create",
             msgTarget: $("#alerts-page")
         });
 
-        attachQuestionMetaForm();
+        attachQuizForm();
     });
 };

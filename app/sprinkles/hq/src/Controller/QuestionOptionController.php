@@ -129,7 +129,7 @@ class QuestionOptionController extends SimpleController
     {
         // GET parameters
         $params = $request->getQueryParams();
-        $question_id = $this->getQuestionIDFromParams($args);
+        $question = $this->getQuestionFromParams($args);
 
         /** @var \UserFrosting\Sprinkle\Account\Authorize\AuthorizationManager $authorizer */
         $authorizer = $this->ci->authorizer;
@@ -164,7 +164,7 @@ class QuestionOptionController extends SimpleController
 
         return $this->ci->view->render($response, 'modals/option.html.twig', [
             'option'        => $option,
-            'question_id'   => $question_id,
+            'question_id'   => $question->id,
             'form'  => [
                 'action'      => 'api/options',
                 'method'      => 'POST',
@@ -173,7 +173,7 @@ class QuestionOptionController extends SimpleController
             ],
             'page' => [
                 'validators'    => $validator->rules('json', false),
-                'question_id'   => $question_id
+                'question_slug'   => $question->slug
             ]
         ]);
     }
@@ -208,7 +208,10 @@ class QuestionOptionController extends SimpleController
 
         /** @var \UserFrosting\Sprinkle\Account\Authorize\AuthorizationManager $authorizer */
         $authorizer = $this->ci->authorizer;
-
+        if (!$authorizer->checkAccess($currentUser, 'create_question')) {
+            throw new ForbiddenException();
+        }
+        
         /** @var \UserFrosting\Sprinkle\Account\Database\Models\Interfaces\UserInterface $currentUser */
         $currentUser = $this->ci->currentUser;
 
@@ -350,10 +353,10 @@ class QuestionOptionController extends SimpleController
      * @throws BadRequestException
      * @return App
      */
-    protected function getQuestionIDFromParams($params)
+    protected function getQuestionFromParams($params)
     {
         // Load the request schema
-        $schema = new RequestSchema('schema://requests/question/get-by-id.yaml');
+        $schema = new RequestSchema('schema://requests/question/get-by-slug.yaml');
 
         // Whitelist and set parameter defaults
         $transformer = new RequestDataTransformer($schema);
@@ -372,7 +375,10 @@ class QuestionOptionController extends SimpleController
             throw $e;
         }
 
-        return $data['id'];
+        $classMapper = $this->ci->classMapper;
+        $question = $classMapper->staticMethod('question', 'where', 'slug', $data['slug'])->first();
+
+        return $question;
     }
 
     /**

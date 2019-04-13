@@ -22,11 +22,11 @@ use UserFrosting\Support\Exception\ForbiddenException;
 use UserFrosting\Support\Exception\NotFoundException;
 
 /**
- * Controller class for Question Meta-related requests, including listing questions, CRUD for Apps, etc.
+ * Controller class for Quiz Meta-related requests, including listing questions, CRUD for Meta, etc.
  *
  * @author Ayansh TechnoSoft (https://ayansh.com)
  */
-class QuestionMetaController extends SimpleController
+class QuizMetaController extends SimpleController
 {
 	/**
      * Processes the request to create a new option for question (from the admin controls).
@@ -56,7 +56,7 @@ class QuestionMetaController extends SimpleController
         $currentUser = $this->ci->currentUser;
 
         // Access-controlled page
-        if (!$authorizer->checkAccess($currentUser, 'create_question')) {
+        if (!$authorizer->checkAccess($currentUser, 'create_quiz')) {
             throw new ForbiddenException();
         }
 
@@ -95,7 +95,7 @@ class QuestionMetaController extends SimpleController
         // Begin transaction - DB will be rolled back if an exception occurs
         Capsule::transaction(function () use ($classMapper, $data, $ms, $config, $currentUser) {
             // Create the App
-            $meta = $classMapper->createInstance('question_meta', $data);
+            $meta = $classMapper->createInstance('quiz_meta', $data);
 
 
             // Store new Option to database
@@ -103,18 +103,18 @@ class QuestionMetaController extends SimpleController
 
             // Create activity record
             $this->ci->userActivityLogger->info("User {$currentUser->user_name} created meta {$option->meta_key}.", [
-                'type'    => 'question_create',
+                'type'    => 'quiz_create',
                 'user_id' => $currentUser->id
             ]);
 
-            $ms->addMessageTranslated('success', 'QUESTION.META.SUCCESS', $data);
+            $ms->addMessageTranslated('success', 'QUIZ.META.SUCCESS', $data);
         });
 
         return $response->withJson([], 200);
     }
 
     /**
-     * Renders the modal form for creating a new Question.
+     * Renders the modal form for creating a new Quiz Meta.
      *
      * This does NOT render a complete page.  Instead, it renders the HTML for the modal, which can be embedded in other pages.
      * This page requires authentication.
@@ -129,7 +129,7 @@ class QuestionMetaController extends SimpleController
     {
         // GET parameters
         $params = $request->getQueryParams();
-        $question = $this->getQuestionFromParams($args);
+        $quiz_slug = $this->getQuizSlugFromParams($args);
 
         /** @var \UserFrosting\Sprinkle\Account\Authorize\AuthorizationManager $authorizer */
         $authorizer = $this->ci->authorizer;
@@ -141,7 +141,7 @@ class QuestionMetaController extends SimpleController
         $translator = $this->ci->translator;
 
         // Access-controlled page
-        if (!$authorizer->checkAccess($currentUser, 'create_question')) {
+        if (!$authorizer->checkAccess($currentUser, 'create_quiz')) {
             throw new ForbiddenException();
         }
 
@@ -149,7 +149,7 @@ class QuestionMetaController extends SimpleController
         $classMapper = $this->ci->classMapper;
 
         // Create a dummy option to prepopulate fields
-        $meta = $classMapper->createInstance('question_meta', []);
+        $meta = $classMapper->createInstance('quiz_meta', []);
 
 
         //$fieldNames = ['question_id', 'option', 'correct_answer'];
@@ -164,7 +164,7 @@ class QuestionMetaController extends SimpleController
 
         return $this->ci->view->render($response, 'modals/meta.html.twig', [
             'meta'        => $meta,
-            'question_id'   => $question->id,
+            'quiz_slug'   => $quiz_slug,
             'form'  => [
                 'action'      => 'api/meta',
                 'method'      => 'POST',
@@ -172,8 +172,8 @@ class QuestionMetaController extends SimpleController
                 'submit_text' => $translator->translate('CREATE')
             ],
             'page' => [
-                'validators'    => $validator->rules('json', false),
-                'question_slug'   => $question->slug
+                'validators'  => $validator->rules('json', false),
+                'quiz_slug'   => $quiz_slug
             ]
         ]);
     }
@@ -185,10 +185,10 @@ class QuestionMetaController extends SimpleController
      * @throws BadRequestException
      * @return App
      */
-    protected function getQuestionFromParams($params)
+    protected function getQuizSlugFromParams($params)
     {
         // Load the request schema
-        $schema = new RequestSchema('schema://requests/question/get-by-slug.yaml');
+        $schema = new RequestSchema('schema://requests/quiz/get-by-slug.yaml');
 
         // Whitelist and set parameter defaults
         $transformer = new RequestDataTransformer($schema);
@@ -207,10 +207,7 @@ class QuestionMetaController extends SimpleController
             throw $e;
         }
 
-        $classMapper = $this->ci->classMapper;
-        $question = $classMapper->staticMethod('question', 'where', 'slug', $data['slug'])->first();
-
-        return $question;
+        return $data['slug'];
     }
 
 }

@@ -10,6 +10,16 @@
         }
       }
     },
+    "js/pages/index": {
+      "scripts": [],
+      "options": {
+        "result": {
+          "type": {
+            "scripts": "plain"
+          }
+        }
+      }
+    },
     "js/pages/apps": {
       "scripts": [
         "hq/js/pages/apps.js",
@@ -54,6 +64,32 @@
       "scripts": [
         "hq/js/pages/question.js",
         "hq/js/widgets/options.js",
+        "hq/js/widgets/meta.js"
+      ],
+      "options": {
+        "result": {
+          "type": {
+            "scripts": "plain"
+          }
+        }
+      }
+    },
+    "js/pages/quizlist": {
+      "scripts": [
+        "hq/js/pages/quizlist.js",
+        "hq/js/widgets/quizlist.js"
+      ],
+      "options": {
+        "result": {
+          "type": {
+            "scripts": "plain"
+          }
+        }
+      }
+    },
+    "js/pages/quiz": {
+      "scripts": [
+        "hq/js/pages/quiz.js",
         "hq/js/widgets/meta.js"
       ],
       "options": {

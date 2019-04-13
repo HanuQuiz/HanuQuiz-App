@@ -14,7 +14,7 @@ $(document).ready(function() {
 
     // Table of Options in question
     $("#widget-question-options").ufTable({
-        dataUrl: site.uri.public + '/api/questions/q/' + page.question_id + '/options',
+        dataUrl: site.uri.public + '/api/questions/q/' + page.question_slug + '/options',
         useLoadingTransition: site.uf_table.use_loading_transition
     });
 
@@ -28,7 +28,7 @@ $(document).ready(function() {
 
     // Table of Meta in question
     $("#widget-question-meta").ufTable({
-        dataUrl: site.uri.public + '/api/questions/q/' + page.question_id + '/meta',
+        dataUrl: site.uri.public + '/api/questions/q/' + page.question_slug + '/meta',
         useLoadingTransition: site.uf_table.use_loading_transition
     });
 

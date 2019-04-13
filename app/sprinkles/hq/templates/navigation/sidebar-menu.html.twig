@@ -5,7 +5,14 @@
     <li>
         <a href="{{site.uri.public}}/apps"><i class="fa fa-tachometer fa-fw"></i> <span>HQ Dashboard</span></a>
     </li>
+    {% if checkAccess('uri_quiz') %}
+        <li>
+            <a href="{{site.uri.public}}/quiz"><i class="fa fa-quora fa-fw"></i> <span>Quiz List</span></a>
+        </li>
+    {% endif %}
+    {% if checkAccess('uri_questions') %}
     <li>
-        <a href="{{site.uri.public}}/questions"><i class="fa fa-cutlery fa-fw"></i> <span>Questions List</span></a>
+        <a href="{{site.uri.public}}/questions"><i class="fa fa-question-circle fa-fw"></i> <span>Questions List</span></a>
     </li>
+    {% endif %}
 {% endblock %}

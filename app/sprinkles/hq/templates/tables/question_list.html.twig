@@ -11,17 +11,26 @@
     <table id="{{table.id}}" class="tablesorter table table-bordered table-hover table-striped" data-sortlist="{{table.sortlist}}">
         <thead>
             <tr>
-                <th class="sorter-metatext" data-column-name="id" data-column-template="#question-table-column-id" data-priority="1">{{translate('QUESTION.ID')}} <i class="fa fa-sort"></i></th>
-                
+
+                {% if 'slug' not in fields.hidden %}
+                <th class="sorter-metatext" data-column-name="slug" data-column-template="#question-table-column-slug" data-priority="3">{{translate("SLUG")}} <i class="fa fa-sort"></i></th>
+                {% endif %}
+
+                {% if 'app_id' not in fields.hidden %}
                 <th class="sorter-metatext" data-column-name="app_id" data-column-template="#question-table-column-appid" data-priority="1">{{translate('APP')}} <i class="fa fa-sort"></i></th>
-                
-                <th class="sorter-metatext" data-column-name="question" data-column-template="#question-table-column-question" data-priority="1">{{translate('QUESTION')}} <i class="fa fa-sort"></i></th>
+                {% endif %}
                 
                 <th class="sorter-metatext" data-column-name="level" data-column-template="#question-table-column-level" data-priority="1">{{translate('QUESTION.LEVEL')}} <i class="fa fa-sort"></i></th>
 
+                <th class="sorter-metatext" data-column-name="question" data-column-template="#question-table-column-question" data-priority="1">{{translate('QUESTION')}} <i class="fa fa-sort"></i></th>
+                
+                {% if 'choice_type' not in fields.hidden %}
                 <th class="sorter-metatext" data-column-name="choice_type" data-column-template="#question-table-column-choicetype" data-priority="1">{{translate('QUESTION.CHOICE_TYPE')}} <i class="fa fa-sort"></i></th>
+                {% endif %}
 
+                {% if 'status' not in fields.hidden %}
                 <th class="filter-select filter-metatext" data-column-name="status" data-column-template="#question-table-column-status" data-priority="2">{{translate("STATUS")}} <i class="fa fa-sort"></i></th>
+                {% endif %}
 
                 <th data-column-name="actions" data-column-template="#question-table-column-actions" data-sorter="false" data-filter="false" data-priority="1">{{translate("ACTIONS")}}</th>
             </tr>
@@ -39,10 +48,10 @@
      # These templates require handlebars-helpers.js, moment.js
     #}
     {% verbatim %}
-    <script id="question-table-column-id" type="text/x-handlebars-template">
-        <td data-text="{{row.id}}">
+    <script id="question-table-column-slug" type="text/x-handlebars-template">
+        <td data-text="{{row.slug}}">
             <strong>
-                <a href="{{site.uri.public}}/questions/q/{{row.id}}">{{row.id}}</a>
+                <a href="{{site.uri.public}}/questions/q/{{row.slug}}">{{row.slug}}</a>
             </strong>
         </td>
     </script>

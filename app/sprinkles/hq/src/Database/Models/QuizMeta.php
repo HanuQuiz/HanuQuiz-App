@@ -12,31 +12,28 @@ namespace UserFrosting\Sprinkle\Hq\Database\Models;
 use UserFrosting\Sprinkle\Core\Database\Models\Model;
 
 /**
- * HQ Quiz Class
+ * HQ Quiz Meta Class
  *
- * Represents a Quiz Object as stored in the database.
+ * Represents a Quiz Meta Object as stored in the database.
  *
  * @author Ayansh TechnoSoft (https://ayansh.com)
  * @see http://www.userfrosting.com/tutorials/lesson-3-data-model/
  *
- * @property string app_name
- * @property string is_active
- * @property string app_id
+ * @property string quiz_id
+ * @property string meta_key
+ * @property string meta_value
  */
-class Quiz extends Model
+class QuizMeta extends Model
 {
     /**
      * @var string The name of the table for the current model.
      */
-    protected $table = 'hq_quiz';
+    protected $table = 'hq_quiz_meta';
 
     protected $fillable = [
-        'app_id',
-        'name',
-        'slug',
-        'description',
-        'level',
-        'status'
+        'quiz_id',
+        'meta_key',
+        'meta_value'
     ];
 
     /**
@@ -45,7 +42,7 @@ class Quiz extends Model
     public $timestamps = true;
 
     /**
-     * Delete this Quiz from the database, along with any options
+     * Delete this Meta data from the database
      */
     public function delete()
     {
@@ -56,25 +53,14 @@ class Quiz extends Model
     }
 
     /**
-     * Lazily load App to which this question belongs
+     * Lazily load Question to which this meta data belongs
      */
-    public function app()
+    public function quiz()
     {
         /** @var \UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
         $classMapper = static::$ci->classMapper;
 
-        return $this->belongsTo($classMapper->getClassMapping('app'), 'app_id');
+        return $this->belongsTo($classMapper->getClassMapping('quiz'), 'quiz_id');
     }
 
-    /**
-     * Lazily load options which belong to this question.
-     */
-    public function questions()
-    {
-        /** @var \UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
-        $classMapper = static::$ci->classMapper;
-
-        return $this->belongsToMany($classMapper->getClassMapping('question'), 'hq_quiz_questions', 'quiz_id', 'question_id');
-
-    }
 }
