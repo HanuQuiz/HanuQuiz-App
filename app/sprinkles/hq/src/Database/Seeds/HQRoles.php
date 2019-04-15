@@ -45,12 +45,12 @@ class HQRoles extends BaseSeed
             ]),
             new Role([
                 'slug'        => 'hq-app-moderator',
-                'name'        => 'App Moderator',
+                'name'        => 'HQ App Moderator',
                 'description' => 'This role is meant for "App Moderators", who can basically do anything related to that app.'
             ]),
             new Role([
                 'slug'        => 'hq-app-reader',
-                'name'        => 'APP Reader',
+                'name'        => 'HQ APP Reader',
                 'description' => 'This role is meant for Technical Users, who can only read app data'
             ])
         ];

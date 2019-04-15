@@ -7,14 +7,14 @@
     return [
         'address_book' => [
             'admin' => [
-                'name'  => 'Ayansh TehcnoSoft'
+                'name'  => 'Ayansh TechnoSoft'
             ]
         ],
         'debug' => [
-            'smtp' => true
+            'smtp' => false
         ],
         'site' => [
-            'author'    =>      'Ayansh TehcnoSoft',
+            'author'    =>      'Ayansh TechnoSoft',
             'title'     =>      'Hanu-Quiz Framework',
             // URLs
             'uri' => [
@@ -22,6 +22,12 @@
             ],
             'registration' => [
                 'require_email_verification' => true
+            ],
+            'analytics' => [
+                'google' => [
+                    'code'      => 'UA-52130169-3',
+                    'enabled'   => true
+                ]
             ]
         ],
         'php' => [
@@ -37,7 +43,7 @@
             ["id" => 2, "choice_type" => 'Multiple']
         ],
         'settings' => [
-            'displayErrorDetails' => true
+            'displayErrorDetails' => false
         ],
         'csrf' => [
             'blacklist' => [

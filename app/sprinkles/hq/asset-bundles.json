@@ -1,25 +1,5 @@
 {
   "bundle": {
-    "js/hq": {
-      "scripts": [],
-      "options": {
-        "result": {
-          "type": {
-            "scripts": "plain"
-          }
-        }
-      }
-    },
-    "js/pages/index": {
-      "scripts": [],
-      "options": {
-        "result": {
-          "type": {
-            "scripts": "plain"
-          }
-        }
-      }
-    },
     "js/pages/apps": {
       "scripts": [
         "hq/js/pages/apps.js",
@@ -96,16 +76,6 @@
         "result": {
           "type": {
             "scripts": "plain"
-          }
-        }
-      }
-    },
-    "css/hq": {
-      "styles": [],
-      "options": {
-        "result": {
-          "type": {
-            "styles": "plain"
           }
         }
       }
