@@ -1,0 +1,16 @@
+---
+meta_data:
+  validators:
+    required:
+      label: "&QUIZ.META"
+      message: VALIDATE.REQUIRED
+quiz_sync_time:
+  validators:
+    required:
+      label: "&QUIZ.SYNC_TIME"
+      message: VALIDATE.REQUIRED
+question_sync_time:
+  validators:
+    required:
+      label: "&QUESTION.SYNC_TIME"
+      message: VALIDATE.REQUIRED

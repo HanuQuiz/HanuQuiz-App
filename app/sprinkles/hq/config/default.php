@@ -21,6 +21,7 @@
                 'author' => 'https://ayansh.com'
             ],
             'registration' => [
+                'enabled' => false,
                 'require_email_verification' => true
             ],
             'analytics' => [
@@ -48,6 +49,15 @@
         'csrf' => [
             'blacklist' => [
                 '^/sync/api/Artifacts' => [
+                    'POST'
+                ],
+                '^/sync/api/Quiz' => [
+                    'POST'
+                ],
+                '^/sync/api/Question' => [
+                    'POST'
+                ],
+                '^/sync/api/login' => [
                     'POST'
                 ]
             ]

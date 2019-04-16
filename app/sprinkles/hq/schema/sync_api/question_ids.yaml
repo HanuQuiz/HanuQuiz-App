@@ -1,0 +1,6 @@
+---
+question_ids:
+  validators:
+    required:
+      label: "&QUESTION"
+      message: VALIDATE.REQUIRED

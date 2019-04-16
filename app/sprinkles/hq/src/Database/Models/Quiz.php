@@ -56,6 +56,17 @@ class Quiz extends Model
     }
 
     /**
+     * Lazily load meta data of this quiz
+     */
+    public function meta()
+    {
+        /** @var \UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
+        $classMapper = static::$ci->classMapper;
+
+        return $this->hasMany($classMapper->getClassMapping('quiz_meta'), 'quiz_id');
+    }
+
+    /**
      * Lazily load App to which this question belongs
      */
     public function app()
@@ -67,7 +78,7 @@ class Quiz extends Model
     }
 
     /**
-     * Lazily load options which belong to this question.
+     * Lazily load questions which belong to this question.
      */
     public function questions()
     {
@@ -75,6 +86,18 @@ class Quiz extends Model
         $classMapper = static::$ci->classMapper;
 
         return $this->belongsToMany($classMapper->getClassMapping('question'), 'hq_quiz_questions', 'quiz_id', 'question_id');
+
+    }
+
+    /**
+     * Lazily load questions which belong to this question.
+     */
+    public function question_list()
+    {
+        /** @var \UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
+        $classMapper = static::$ci->classMapper;
+
+        return $this->hasMany($classMapper->getClassMapping('quiz_questions'), 'quiz_id');
 
     }
 }

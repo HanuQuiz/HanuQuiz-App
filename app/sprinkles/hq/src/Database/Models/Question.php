@@ -56,6 +56,17 @@ class Question extends Model
     }
 
     /**
+     * Lazily load meta data of this Question
+     */
+    public function meta()
+    {
+        /** @var \UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
+        $classMapper = static::$ci->classMapper;
+
+        return $this->hasMany($classMapper->getClassMapping('question_meta'), 'question_id');
+    }
+
+    /**
      * Lazily load App to which this question belongs
      */
     public function app()
@@ -74,6 +85,6 @@ class Question extends Model
         /** @var \UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
         $classMapper = static::$ci->classMapper;
 
-        return $this->hasMany($classMapper->getClassMapping('options'), 'id');
+        return $this->hasMany($classMapper->getClassMapping('question_options'), 'question_id');
     }
 }

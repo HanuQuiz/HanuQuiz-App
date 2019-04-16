@@ -57,6 +57,8 @@ class ServicesProvider
 
             $classMapper->setClassMapping('quiz_meta_sprunje', 'UserFrosting\Sprinkle\Hq\Sprunje\QuizMetaSprunje');
             $classMapper->setClassMapping('quiz_meta', 'UserFrosting\Sprinkle\Hq\Database\Models\QuizMeta');
+
+            $classMapper->setClassMapping('quiz_questions', 'UserFrosting\Sprinkle\Hq\Database\Models\QuizQuestions');
             
             return $classMapper;
         });

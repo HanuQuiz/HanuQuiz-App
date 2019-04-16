@@ -20,4 +20,10 @@ $app->group('/sync/api/', function () {
 
     $this->post('Question', 'UserFrosting\Sprinkle\Hq\Controller\SyncAPIController:fetchQuestion');
 
+})->add('authGuard')->add(new NoCache());
+
+$app->group('/sync/api', function () {
+
+    $this->post('/login', 'UserFrosting\Sprinkle\Account\Controller\AccountController:login');
+    
 })->add(new NoCache());
