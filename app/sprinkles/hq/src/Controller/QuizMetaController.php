@@ -166,7 +166,7 @@ class QuizMetaController extends SimpleController
             'meta'        => $meta,
             'quiz_slug'   => $quiz_slug,
             'form'  => [
-                'action'      => 'api/meta',
+                'action'      => 'api/quiz/meta',
                 'method'      => 'POST',
                 'fields'      => $fields,
                 'submit_text' => $translator->translate('CREATE')

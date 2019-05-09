@@ -166,7 +166,7 @@ class QuestionMetaController extends SimpleController
             'meta'        => $meta,
             'question_id'   => $question->id,
             'form'  => [
-                'action'      => 'api/meta',
+                'action'      => 'api/q/meta',
                 'method'      => 'POST',
                 'fields'      => $fields,
                 'submit_text' => $translator->translate('CREATE')

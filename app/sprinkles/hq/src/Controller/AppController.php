@@ -21,6 +21,9 @@ use UserFrosting\Support\Exception\BadRequestException;
 use UserFrosting\Support\Exception\ForbiddenException;
 use UserFrosting\Support\Exception\NotFoundException;
 
+use UserFrosting\Sprinkle\Hq\Database\Models\Question;
+use UserFrosting\Sprinkle\Hq\Database\Models\Quiz;
+
 /**
  * Controller class for Application-related requests, including listing useAppsrs, CRUD for Apps, etc.
  *
@@ -205,14 +208,17 @@ class AppController extends SimpleController
             $editButtons['hidden'][] = 'delete';
         }
 
+        $question_count = Question::where('app_id',$app->id)->count();
+        $quiz_count = Quiz::where('app_id',$app->id)->count();
+
         return $this->ci->view->render($response, 'pages/app.html.twig', [
             'app'  => $app,
             'fields' => $fields,
             'tools'  => $editButtons,
             'delete_redirect' => $this->ci->router->pathFor('uri_apps'),
             'counter' => [
-                'questions'  => $classMapper->staticMethod('question', 'count'),
-                'quizzes'  => $classMapper->staticMethod('quiz', 'count')
+                'questions'  => $question_count,
+                'quizzes'  => $quiz_count
             ]
         ]);
     }
